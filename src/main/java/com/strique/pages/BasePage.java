@@ -22,3 +22,4 @@ public class BasePage {
     PageFactory.initElements(driver, this); // Initialize WebElements using PageFactory
   }
 }
+
