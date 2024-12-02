@@ -1,0 +1,23 @@
+
+### IntelliJ IDEA ###
+.idea/modules.xml
+.idea/jarRepositories.xml
+.idea/compiler.xml
+.idea/libraries/
+target/
+build/
+*.iws
+*.iml
+*.ipr
+
+.codiumai
+
+### External Libraries  ###
+External Libraries/
+
+
+### Scratches and consoles ###
+Extensions/
+
+### Log Files ###
+logs/
