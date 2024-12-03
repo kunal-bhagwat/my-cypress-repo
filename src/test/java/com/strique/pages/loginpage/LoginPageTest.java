@@ -27,7 +27,7 @@ public class LoginPageTest extends BasePageTest {
     // Wait for the username field to be visible
     WebElement striqueUserEmail =
         wait.until(ExpectedConditions.visibilityOf(lp.striqueUserEmail()));
-    striqueUserEmail.sendKeys("arya.khadakkar@strique.io");
+    striqueUserEmail.sendKeys("teststrique@gmail.com");
 
     // Wait for the continue button to be clickable and click it
     WebElement userContinueButton =
@@ -37,7 +37,7 @@ public class LoginPageTest extends BasePageTest {
     // Wait for the password field to load and send password
     WebElement striqueUserPassword =
         wait.until(ExpectedConditions.visibilityOf(lp.striqueUserPassword()));
-    striqueUserPassword.sendKeys("AryaK@123456");
+    striqueUserPassword.sendKeys("test@strique");
 
     // Wait for the second continue button to be clickable and click it
     WebElement passwordContinueButton =
