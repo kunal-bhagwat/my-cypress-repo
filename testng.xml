@@ -39,13 +39,15 @@ threads -->
 
 
   <!-- SafariTest for running on Safari browser -->
-  <!--  <test name="SafariTest">
-     <parameter name="os" value="Macbook Air"/>
-     <parameter name="browser" value="safari"/>
-     <classes>
-       <class name="com.strique.pages.loginpage.LoginPageTest"/>
-     </classes>
-   </test>-->
+  <test name="SafariTest">
+
+    <parameter name="os" value="Macbook Air"/>
+    <parameter name="browser" value="safari"/>
+
+    <classes>
+      <class name="com.strique.pages.loginpage.SafariLoginTest"/>
+    </classes>
+  </test>
 
 
 </suite> <!-- Suite -->
