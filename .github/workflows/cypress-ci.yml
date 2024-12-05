@@ -13,12 +13,31 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2  # Checkout the repository
 
-    - name: Set up Java
+    - name: Set up JDK 22 with Zulu
       uses: actions/setup-java@v3
       with:
-        java-version: '22'  # Set up JDK 22 (or whichever version you're using)
-        distribution: 'adoptopenjdk'  # Specify the distribution (e.g., adoptopenjdk, zulu, oracle)
-        cache: maven  # Cache Maven dependencies to speed up builds
+        java-version: '22'  # Set up JDK 22
+        distribution: 'zulu'  # Use the Zulu JDK distribution (supports JDK 22)
+        java-package: jdk  # Ensure the JDK is installed
+
+    - name: Set up Maven
+      uses: shivammathur/setup-maven@v3
+      with:
+        maven-version: '3.9.1'  # Specify Maven version
+
+    - name: Install browser drivers
+      run: |
+        # Install ChromeDriver
+        wget https://chromedriver.storage.googleapis.com/114.0.5735.90/chromedriver_linux64.zip
+        unzip chromedriver_linux64.zip -d /usr/local/bin/
+        
+        # Install GeckoDriver (for Firefox)
+        wget https://github.com/mozilla/geckodriver/releases/download/v0.32.0/geckodriver-v0.32.0-linux64.tar.gz
+        tar -xzf geckodriver-v0.32.0-linux64.tar.gz -C /usr/local/bin/
+        
+        # Install EdgeDriver
+        wget https://msedgedriver.azureedge.net/114.0.1823.43/edgedriver_linux64.zip
+        unzip edgedriver_linux64.zip -d /usr/local/bin/
 
     - name: Install dependencies and build project
       run: |
