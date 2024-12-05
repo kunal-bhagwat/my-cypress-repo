@@ -24,9 +24,11 @@ jobs:
           java-version: '22'
           distribution: 'temurin'  # Official OpenJDK distribution
 
-      # Step 3: Set up Maven
+      # Step 3: Set up Maven 3.8.2
       - name: Set up Maven
-        uses: apache/setup-maven@v2  # Corrected Maven setup action
+        uses: stCarolas/setup-maven@v5
+        with:
+          maven-version: 3.8.2
 
       # Step 4: Build the project using Maven
       - name: Build with Maven
