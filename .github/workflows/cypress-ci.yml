@@ -17,9 +17,10 @@ jobs:
       uses: actions/setup-java@v3
       with:
         java-version: '22'  # Set up JDK 22 (or whichever version you're using)
+        distribution: 'adoptopenjdk'  # Specify the distribution (e.g., adoptopenjdk, zulu, oracle)
         cache: maven  # Cache Maven dependencies to speed up builds
 
-    - name: Install dependencies
+    - name: Install dependencies and build project
       run: |
         mvn clean install  # Install dependencies and build the project
 
