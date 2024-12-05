@@ -3,7 +3,7 @@ name: Cypress CI Pipeline
 on:
   push:
     branches:
-      - master  # Trigger the workflow on pushes to the main branch
+      - master  # Trigger the workflow on pushes to the master branch
 
 jobs:
   build:
@@ -16,12 +16,8 @@ jobs:
     - name: Set up Java
       uses: actions/setup-java@v3
       with:
-        java-version: '22'  # Set up JDK 21 (or whichever version you're using)
-
-    - name: Set up Maven
-      uses: shivammathur/setup-maven@v3
-      with:
-        maven-version: '3.9.1'  # Specify Maven version
+        java-version: '22'  # Set up JDK 22 (or whichever version you're using)
+        cache: maven  # Cache Maven dependencies to speed up builds
 
     - name: Install dependencies
       run: |
@@ -33,4 +29,3 @@ jobs:
     - name: Run Cypress tests
       run: |
         npx cypress run --headless  # Run Cypress tests in headless mode
-
