@@ -8,68 +8,78 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.safari.SafariDriver;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
-/**
- * BasePage class provides the setup for initializing the WebDriver based on the browser and OS
- * parameters passed via TestNG XML.
- */
 public class BasePageTest {
 
-  // WebDriver instance to control the browser
   public WebDriver driver;
-  // Logger instance for logging information during execution
   public Logger logger;
 
-  /**
-   * Setup method initializes the WebDriver based on the browser parameter.
-   *
-   * @param br The browser name (e.g., chrome, firefox, edge, safari).
-   */
   @Test(priority = 0)
-  @Parameters({"browser"}) // Read parameters from the master and TestNG XML file
-  public void setup(String br) {
-    // Create a Properties object to load configuration settings
-    Properties prop = new Properties();
-    try (FileReader reader = new FileReader("src/main/resources/config.properties")) {
-      // Load the properties file to read configuration values (e.g., appURL)
-      prop.load(reader);
-    } catch (IOException e) {
-      e.printStackTrace(); // Handle exceptions that may occur while loading the file
-    }
-
+  @Parameters({"browser", "headless"})
+  public void setup(String br, String headless) {
+    // Initialize the logger here to ensure it's not null
     logger = LogManager.getLogger(this.getClass());
 
-    // Switch-case to handle browser selection based on the parameter
-    switch (br.toLowerCase()) {
-      case "chrome":
-        driver = new ChromeDriver();
-        break; // Launch Chrome browser
-      case "edge":
-        driver = new EdgeDriver();
-        break; // Launch Edge browser
-      case "firefox":
-        driver = new FirefoxDriver();
-        break; // Launch Firefox browser
-      case "safari":
-        driver = new SafariDriver();
-        break; // Launch Safari browser
-      default:
-        System.out.println("Invalid browser name..");
-        return; // Handle invalid browser inputs
+    Properties prop = new Properties();
+    try (FileReader reader = new FileReader("src/main/resources/config.properties")) {
+      prop.load(reader);
+    } catch (IOException e) {
+      e.printStackTrace();
     }
 
-    // Delete all cookies before starting the session
+    boolean isHeadless = Boolean.parseBoolean(headless);
+
+    switch (br.toLowerCase()) {
+      case "chrome":
+        ChromeOptions chromeOptions = new ChromeOptions();
+        if (isHeadless) {
+          chromeOptions.addArguments("--headless");
+          chromeOptions.addArguments("--disable-gpu");
+          chromeOptions.addArguments("--window-size=1920x1080");
+        }
+        driver = new ChromeDriver(chromeOptions);
+        break;
+      case "edge":
+        EdgeOptions edgeOptions = new EdgeOptions();
+        if (isHeadless) {
+          edgeOptions.addArguments("--headless");
+          edgeOptions.addArguments("--disable-gpu");
+          edgeOptions.addArguments("--window-size=1920x1080");
+        }
+        driver = new EdgeDriver(edgeOptions);
+        break;
+      case "firefox":
+        FirefoxOptions firefoxOptions = new FirefoxOptions();
+        if (isHeadless) {
+          firefoxOptions.addArguments("--headless");
+        }
+        driver = new FirefoxDriver(firefoxOptions);
+        break;
+      case "safari":
+        if (isHeadless) {
+          System.out.println("Safari does not support headless mode on macOS");
+        }
+        driver = new SafariDriver();
+        break;
+      default:
+        System.out.println("Invalid browser name..");
+        return;
+    }
+
     driver.manage().deleteAllCookies();
-    // reading url from properties file
     driver.get(prop.getProperty("appURL"));
-    // Maximize the browser window
     driver.manage().window().maximize();
-    // Wait for 20 seconds
     driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(20));
+
+    // Log the setup information
+    logger.info("Browser setup completed for: " + br + ", Headless: " + headless);
   }
 }
