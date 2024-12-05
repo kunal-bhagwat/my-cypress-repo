@@ -1,78 +1,43 @@
-name: Cypress CI Pipeline
+name: Build Project with Maven
 
 on:
   push:
     branches:
-      - master  # Trigger the workflow on pushes to the master branch
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # Use Ubuntu for the environment
+    runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2  # Checkout the repository
+      # Step 1: Checkout the repository code
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Set up JDK 22 with Zulu
-      uses: actions/setup-java@v3
-      with:
-        java-version: '22'  # Set up JDK 22
-        distribution: 'zulu'  # Use the Zulu JDK distribution (supports JDK 22)
-        java-package: jdk  # Ensure the JDK is installed
+      # Step 2: Set up JDK 22
+      - name: Set up JDK 22
+        uses: actions/setup-java@v2
+        with:
+          java-version: '22'
 
-    - name: Install Maven manually
-      run: |
-        # Install Maven 3.9.1
-        wget https://archive.apache.org/dist/maven/maven-3/3.9.1/binaries/apache-maven-3.9.1-bin.tar.gz
-        tar -xvf apache-maven-3.9.1-bin.tar.gz
-        sudo mv apache-maven-3.9.1 /opt/maven
-        sudo ln -s /opt/maven/bin/mvn /usr/local/bin/mvn
-        mvn --version  # Check Maven version
+      # Step 3: Install Maven
+      - name: Set up Maven
+        uses: actions/setup-java@v2
+        with:
+          java-version: '22'
+          maven-version: '3.8.1'
 
-    - name: Install Chrome and ChromeDriver
-      run: |
-        # Install the latest version of Google Chrome
-        sudo apt update
-        sudo apt install -y google-chrome-stable
-        
-        # Install ChromeDriver compatible with installed Chrome version
-        CHROME_VERSION=$(google-chrome-stable --version | sed 's/[^0-9]*\([0-9.]*\).*$/\1/')
-        DRIVER_VERSION=$(curl -sSL https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION})
-        wget https://chromedriver.storage.googleapis.com/${DRIVER_VERSION}/chromedriver_linux64.zip
-        unzip chromedriver_linux64.zip
-        sudo mv chromedriver /usr/local/bin/
+      # Step 4: Build the project using Maven
+      - name: Build with Maven
+        run: |
+          mvn clean install
 
-    - name: Install Edge and EdgeDriver
-      run: |
-        # Install Microsoft Edge
-        sudo apt install -y microsoft-edge-stable
-
-        # Install EdgeDriver compatible with installed Edge version
-        EDGE_VERSION=$(microsoft-edge --version | sed 's/[^0-9]*\([0-9.]*\).*$/\1/')
-        DRIVER_VERSION_EDGE=$(curl -sSL https://msedgedriver.azureedge.net/LATEST_STABLE/${EDGE_VERSION}/msedgedriver-linux64.zip)
-        wget https://msedgedriver.azureedge.net/LATEST_STABLE/${EDGE_VERSION}/msedgedriver-linux64.zip
-        unzip msedgedriver-linux64.zip
-        sudo mv msedgedriver /usr/local/bin/
-
-    - name: Install GeckoDriver (Firefox)
-      run: |
-        # Install Firefox
-        sudo apt install -y firefox
-        
-        # Install GeckoDriver compatible with installed Firefox version
-        FIREFOX_VERSION=$(firefox --version | sed 's/[^0-9]*\([0-9.]*\).*$/\1/')
-        DRIVER_VERSION_GECKO=$(curl -sSL https://github.com/mozilla/geckodriver/releases/latest | grep -oP 'geckodriver-\K[0-9.]+')
-        wget https://github.com/mozilla/geckodriver/releases/download/v${DRIVER_VERSION_GECKO}/geckodriver-v${DRIVER_VERSION_GECKO}-linux64.tar.gz
-        tar -xvzf geckodriver-v${DRIVER_VERSION_GECKO}-linux64.tar.gz
-        sudo mv geckodriver /usr/local/bin/
-
-    - name: Install dependencies and build project
-      run: |
-        mvn clean install  # Install dependencies and build the project
-
-    - name: Install Cypress
-      uses: cypress-io/github-action@v4  # Install and set up Cypress
-
-    - name: Run Cypress tests
-      run: |
-        npx cypress run --headless  # Run Cypress tests in headless mode
+      # Optionally: Upload build artifacts if needed
+      # - name: Upload build artifacts
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: build-artifacts
+      #     path: target/*.jar
