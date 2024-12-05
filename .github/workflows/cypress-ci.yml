@@ -29,21 +29,14 @@ jobs:
         sudo ln -s /opt/maven/bin/mvn /usr/local/bin/mvn
         mvn --version  # Check Maven version
 
-    - name: Install the latest ChromeDriver
-      run: |
-        # Install the latest ChromeDriver that matches the installed version of Chrome
-        CHROME_VERSION=$(google-chrome --version | awk '{print $3}')
-        LATEST_CHROMEDRIVER=$(curl -sSL "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION}")
-        wget "https://chromedriver.storage.googleapis.com/${LATEST_CHROMEDRIVER}/chromedriver_linux64.zip"
-        unzip chromedriver_linux64.zip -d /usr/local/bin/
+    - name: Install ChromeDriver
+      uses: googlechrome/setup-chromedriver@v2  # Install ChromeDriver using GitHub's official action
 
-    - name: Install the latest EdgeDriver
-      run: |
-        # Install the latest EdgeDriver that matches the installed version of Edge
-        EDGE_VERSION=$(microsoft-edge --version | awk '{print $3}')
-        LATEST_EDGEDRIVER=$(curl -sSL "https://msedgedriver.azureedge.net/LATEST_RELEASE_${EDGE_VERSION}")
-        wget "https://msedgedriver.azureedge.net/${LATEST_EDGEDRIVER}/edgedriver_linux64.zip"
-        unzip edgedriver_linux64.zip -d /usr/local/bin/
+    - name: Install EdgeDriver
+      uses: microsoft/setup-msedge-driver@v1  # Install EdgeDriver using GitHub's official action
+
+    - name: Install GeckoDriver (Firefox)
+      uses: mozilla/setup-geckodriver@v2  # Install GeckoDriver for Firefox using GitHub's official action
 
     - name: Install dependencies and build project
       run: |
