@@ -29,14 +29,42 @@ jobs:
         sudo ln -s /opt/maven/bin/mvn /usr/local/bin/mvn
         mvn --version  # Check Maven version
 
-    - name: Install ChromeDriver
-      uses: googlechrome/setup-chromedriver@v2  # Install ChromeDriver using GitHub's official action
+    - name: Install Chrome and ChromeDriver
+      run: |
+        # Install the latest version of Google Chrome
+        sudo apt update
+        sudo apt install -y google-chrome-stable
+        
+        # Install ChromeDriver compatible with installed Chrome version
+        CHROME_VERSION=$(google-chrome-stable --version | sed 's/[^0-9]*\([0-9.]*\).*$/\1/')
+        DRIVER_VERSION=$(curl -sSL https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION})
+        wget https://chromedriver.storage.googleapis.com/${DRIVER_VERSION}/chromedriver_linux64.zip
+        unzip chromedriver_linux64.zip
+        sudo mv chromedriver /usr/local/bin/
 
-    - name: Install EdgeDriver
-      uses: microsoft/setup-msedge-driver@v1  # Install EdgeDriver using GitHub's official action
+    - name: Install Edge and EdgeDriver
+      run: |
+        # Install Microsoft Edge
+        sudo apt install -y microsoft-edge-stable
+
+        # Install EdgeDriver compatible with installed Edge version
+        EDGE_VERSION=$(microsoft-edge --version | sed 's/[^0-9]*\([0-9.]*\).*$/\1/')
+        DRIVER_VERSION_EDGE=$(curl -sSL https://msedgedriver.azureedge.net/LATEST_STABLE/${EDGE_VERSION}/msedgedriver-linux64.zip)
+        wget https://msedgedriver.azureedge.net/LATEST_STABLE/${EDGE_VERSION}/msedgedriver-linux64.zip
+        unzip msedgedriver-linux64.zip
+        sudo mv msedgedriver /usr/local/bin/
 
     - name: Install GeckoDriver (Firefox)
-      uses: mozilla/setup-geckodriver@v2  # Install GeckoDriver for Firefox using GitHub's official action
+      run: |
+        # Install Firefox
+        sudo apt install -y firefox
+        
+        # Install GeckoDriver compatible with installed Firefox version
+        FIREFOX_VERSION=$(firefox --version | sed 's/[^0-9]*\([0-9.]*\).*$/\1/')
+        DRIVER_VERSION_GECKO=$(curl -sSL https://github.com/mozilla/geckodriver/releases/latest | grep -oP 'geckodriver-\K[0-9.]+')
+        wget https://github.com/mozilla/geckodriver/releases/download/v${DRIVER_VERSION_GECKO}/geckodriver-v${DRIVER_VERSION_GECKO}-linux64.tar.gz
+        tar -xvzf geckodriver-v${DRIVER_VERSION_GECKO}-linux64.tar.gz
+        sudo mv geckodriver /usr/local/bin/
 
     - name: Install dependencies and build project
       run: |
