@@ -3,10 +3,10 @@ name: Build Project with Maven
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     branches:
-      - master
+      - main
 
 jobs:
   build:
@@ -26,7 +26,7 @@ jobs:
 
       # Step 3: Set up Maven
       - name: Set up Maven
-        uses: actions/setup-maven@v2
+        uses: apache/setup-maven@v2  # Corrected Maven setup action
 
       # Step 4: Build the project using Maven
       - name: Build with Maven
