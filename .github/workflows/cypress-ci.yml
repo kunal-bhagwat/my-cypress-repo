@@ -1,0 +1,36 @@
+name: Cypress CI Pipeline
+
+on:
+  push:
+    branches:
+      - main  # Trigger the workflow on pushes to the main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Use Ubuntu for the environment
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2  # Checkout the repository
+
+    - name: Set up Java
+      uses: actions/setup-java@v3
+      with:
+        java-version: '22'  # Set up JDK 21 (or whichever version you're using)
+
+    - name: Set up Maven
+      uses: shivammathur/setup-maven@v3
+      with:
+        maven-version: '3.9.1'  # Specify Maven version
+
+    - name: Install dependencies
+      run: |
+        mvn clean install  # Install dependencies and build the project
+
+    - name: Install Cypress
+      uses: cypress-io/github-action@v4  # Install and set up Cypress
+
+    - name: Run Cypress tests
+      run: |
+        npx cypress run --headless  # Run Cypress tests in headless mode
+
