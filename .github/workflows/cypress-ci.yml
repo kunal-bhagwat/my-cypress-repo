@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # You can also use macos-latest or windows-latest, depending on your requirement
+    runs-on: ubuntu-latest
 
     steps:
       # Step 1: Checkout the repository code
@@ -30,6 +30,18 @@ jobs:
         with:
           maven-version: 3.8.2
 
+      # Step 4: Set up Chrome browser for tests
+      - name: Set up Chrome browser
+        uses: browser-actions/setup-chrome@v1
+
+      # Step 5: Set up Firefox browser for tests
+      - name: Set up Firefox browser
+        uses: browser-actions/setup-firefox@v1
+
       # Step 6: Build the project using Maven
       - name: Build with Maven
         run: mvn clean install
+
+      # Step 7: Run the tests (ensure the test is configured to use Chrome or Firefox)
+      - name: Run Tests
+        run: mvn test
