@@ -30,31 +30,14 @@ jobs:
         with:
           maven-version: 3.8.2
 
-      # Step 4: Setup Chrome using browser-actions
-      - name: Set up Chrome
-        uses: browser-actions/setup-chrome@v1
+      # Step 4: Setup Edge using browser-actions
+      - uses: browser-actions/setup-edge@v1
 
-      # Step 5: Check Chrome version
-      - name: Check Chrome version
-        run: chrome --version
-
-      # Step 6: Setup Firefox using browser-actions
-      - name: Set up Firefox
-        uses: browser-actions/setup-firefox@v1
-
-      # Step 7: Check Firefox version
-      - name: Check Firefox version
-        run: firefox --version
-
-      # Step 8: Setup Edge using browser-actions (works on all platforms)
-      - name: Set up Edge
-        uses: browser-actions/setup-edge@v1
-
-      # Step 9: Check Edge version
-      - name: Check Edge version
+      # Step 5: Print the Edge version (cross-platform)
+      - name: Print Edge version
         run: |
           msedge --version || echo "Edge not found on this platform."
 
-      # Step 10: Build the project using Maven
+      # Step 6: Build the project using Maven
       - name: Build with Maven
         run: mvn clean install
