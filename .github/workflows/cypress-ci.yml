@@ -38,11 +38,14 @@ jobs:
       - name: Set up Firefox browser
         uses: browser-actions/setup-firefox@v1
 
-      # Step 6: Set up Microsoft Edge browser for tests
-      - name: Set up Edge browser
-        uses: browser-actions/setup-edge@v1
-        with:
-          edge-version: stable # You can also use "beta", "dev", or "canary"
+      # Step 6: Manually install Microsoft Edge on Ubuntu
+      - name: Install Microsoft Edge
+        run: |
+          sudo apt update
+          sudo apt install -y wget
+          wget https://packages.microsoft.com/repos/edge/pool/main/m/microsoft-edge-stable/microsoft-edge-stable_113.0.1774.50-1_amd64.deb
+          sudo dpkg -i microsoft-edge-stable_113.0.1774.50-1_amd64.deb
+          sudo apt install -f  # Fix missing dependencies
 
       # Step 7: Build the project using Maven
       - name: Build with Maven
