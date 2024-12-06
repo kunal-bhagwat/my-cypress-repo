@@ -1,1 +1,0 @@
-# strique-test-suite
