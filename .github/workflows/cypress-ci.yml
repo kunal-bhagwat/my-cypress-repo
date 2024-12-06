@@ -43,8 +43,8 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y wget
-          wget https://packages.microsoft.com/repos/edge/pool/main/m/microsoft-edge-stable/microsoft-edge-stable_117.0.2045.43-1_amd64.deb
-          sudo dpkg -i microsoft-edge-stable_117.0.2045.43-1_amd64.deb
+          wget https://packages.microsoft.com/repos/edge/pool/main/m/microsoft-edge-stable/microsoft-edge-stable_128.0.2739.42-1_amd64.deb
+          sudo dpkg -i microsoft-edge-stable_128.0.2739.42-1_amd64.deb
           sudo apt install -f  # Fix missing dependencies
 
       # Step 7: Build the project using Maven
