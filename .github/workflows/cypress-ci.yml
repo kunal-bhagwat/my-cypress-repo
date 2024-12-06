@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # You can also use macos-latest or windows-latest, depending on your requirement
 
     steps:
       # Step 1: Checkout the repository code
@@ -46,16 +46,14 @@ jobs:
       - name: Check Firefox version
         run: firefox --version
 
-      # Step 8: Setup Edge using browser-actions (for Windows-based environments, adjust if needed)
+      # Step 8: Setup Edge using browser-actions (works on all platforms)
       - name: Set up Edge
         uses: browser-actions/setup-edge@v1
-        if: runner.os == 'Windows'
 
       # Step 9: Check Edge version
       - name: Check Edge version
-        if: runner.os == 'Windows'
         run: |
-          (Get-Item (Get-Command msedge).Source).VersionInfo.ProductVersion
+          msedge --version || echo "Edge not found on this platform."
 
       # Step 10: Build the project using Maven
       - name: Build with Maven
