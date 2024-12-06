@@ -1,29 +1,30 @@
-name: Java CI with Maven
-
-on:
-  push:
-    branches:
-      - main
-
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
+      # Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up JDK
-        uses: actions/setup-java@v3
-        with:
-          java-version: 17
-          distribution: 'temurin'
-
-      - name: Set up Browser Drivers
+      # Install dependencies for browsers and geckodriver
+      - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y chromium-browser
-          sudo apt-get install -y firefox-geckodriver
+          sudo apt-get install -y wget tar chromium-browser
 
-      - name: Run Maven Tests
-        run: mvn test -Dtest=!SafariLoginTest
+          # Install Geckodriver manually
+          wget https://github.com/mozilla/geckodriver/releases/latest/download/geckodriver-v0.33.0-linux64.tar.gz
+          tar -xvzf geckodriver-v0.33.0-linux64.tar.gz
+          sudo mv geckodriver /usr/local/bin/
+          geckodriver --version
+
+      # Set up Maven and run tests
+      - name: Set up Maven
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'adoptopenjdk'
+
+      - name: Run tests
+        run: |
+          mvn clean test
